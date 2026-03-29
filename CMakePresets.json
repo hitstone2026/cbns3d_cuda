@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 19, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "windows-vs2026-cuda",
+      "displayName": "VS 2026 + CUDA (x64)",
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build",
+      "toolset": "cuda=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.2",
+      "cacheVariables": {
+        "CMAKE_CUDA_ARCHITECTURES": "80"
+      }
+    },
+    {
+      "name": "windows-vs2022-cuda",
+      "displayName": "VS 2022 + CUDA (x64)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build",
+      "toolset": "cuda=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.2",
+      "cacheVariables": {
+        "CMAKE_CUDA_ARCHITECTURES": "80"
+      }
+    },
+    {
+      "name": "windows-ninja-cuda",
+      "displayName": "Ninja + nvcc (no VS CUDA integration; use MSVC env)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-ninja",
+      "cacheVariables": {
+        "CMAKE_CUDA_ARCHITECTURES": "80"
+      }
+    }
+  ]
+}
