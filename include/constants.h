@@ -10,14 +10,14 @@
 
 namespace constant {
 
-  const size_type NEQ = 5;
-  const size_type NG = 2;
+  constexpr size_type NEQ = 5;
+  constexpr size_type NG = 2;
 
-  const value_type PI = 3.14159265358979323846;
+  constexpr value_type PI = 3.14159265358979323846;
 
-  const size_type THREADS_PER_BLOCK_X = 8;
-  const size_type THREADS_PER_BLOCK_Y = 8;
-  const size_type THREADS_PER_BLOCK_Z = 4;
+  constexpr size_type THREADS_PER_BLOCK_X = 8;
+  constexpr size_type THREADS_PER_BLOCK_Y = 8;
+  constexpr size_type THREADS_PER_BLOCK_Z = 4;
 
 }
 

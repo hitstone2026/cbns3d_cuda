@@ -13,8 +13,8 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 14)
+# specify the C++ standard (CUDA 13+ Thrust/CCCL expects at least C++17)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Check if CMAKE_CUDA_ARCHITECTURES is set
@@ -28,8 +28,13 @@ message(STATUS "CUDA architectures set to: ${CMAKE_CUDA_ARCHITECTURES}")
 find_package(CUDA REQUIRED)
 
 if(NOT DEFINED CMAKE_CUDA_STANDARD)
-    set(CMAKE_CUDA_STANDARD 14)
+    set(CMAKE_CUDA_STANDARD 17)
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
+
+# CUDA 13+ CCCL (used by Thrust) requires MSVC's conforming preprocessor when compiling .cu with nvcc.
+if(MSVC)
+  string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler=/Zc:preprocessor")
 endif()
 
 include_directories("${CUDA_INCLUDE_DIRS}")
@@ -37,8 +42,9 @@ include_directories("${CUDA_INCLUDE_DIRS}")
 # Bring the headers into the project
 include_directories(include)
 
-# Find all *.cu files in the src/ directory
+# Find all *.cu files in the src/ directory (stub is only for final exe device link, not the lib)
 file(GLOB CU_FILES "src/*.cu")
+list(REMOVE_ITEM CU_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/cuda_device_link_stub.cu")
 
 add_library(block3d_cuda STATIC ${CU_FILES})
 set_target_properties(block3d_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
@@ -50,10 +56,12 @@ if (INVIS_MODE)
 			     )
 endif()
 
-set(SOURCES src/cbns3d.cpp src/Block3d.cpp)
+set(SOURCES src/cbns3d.cpp src/Block3d.cpp src/cuda_device_link_stub.cu)
 
 # Add the executable
 add_executable(cbns3d_cuda ${SOURCES})
+set_target_properties(cbns3d_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON
+                                              CUDA_RESOLVE_DEVICE_SYMBOLS ON)
 target_link_libraries(cbns3d_cuda block3d_cuda)
 
 if (INVIS_MODE)
@@ -82,8 +90,12 @@ if(BUILD_TESTS)
   add_executable(unit_tests
                  test/gradient_test.cpp
                  test/metrics_test.cpp
+                 src/cuda_device_link_stub.cu
   	         )
-  
+
+  set_target_properties(unit_tests PROPERTIES CUDA_SEPARABLE_COMPILATION ON
+                                              CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+
   target_link_libraries(unit_tests gtest_main block3d_cuda)
   
   include(GoogleTest)
