@@ -24,22 +24,22 @@ namespace block3d_cuda {
 		    );
   
     primitive_bc_kernel<<< num_blocks, num_threads >>>(Q,
-						       block_data->rho,
-						       block_data->u,
-						       block_data->v,
-						       block_data->w,
-						       block_data->p,
-						       block_data->T,
-						       block_data->xi_x,
-						       block_data->xi_y,
-						       block_data->xi_z,
-						       block_data->eta_x,
-						       block_data->eta_y,
-						       block_data->eta_z,
-						       block_data->zeta_x,
-						       block_data->zeta_y,
-						       block_data->zeta_z,
-						       block_data->Jac
+						       block_data->rho_ptr(),
+						       block_data->u_ptr(),
+						       block_data->v_ptr(),
+						       block_data->w_ptr(),
+						       block_data->p_ptr(),
+						       block_data->T_ptr(),
+						       block_data->xi_x_ptr(),
+						       block_data->xi_y_ptr(),
+						       block_data->xi_z_ptr(),
+						       block_data->eta_x_ptr(),
+						       block_data->eta_y_ptr(),
+						       block_data->eta_z_ptr(),
+						       block_data->zeta_x_ptr(),
+						       block_data->zeta_y_ptr(),
+						       block_data->zeta_z_ptr(),
+						       block_data->Jac_ptr()
 						       );
 
     ERROR_CHECK( cudaDeviceSynchronize() );

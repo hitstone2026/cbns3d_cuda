@@ -1,5 +1,7 @@
 #include "get_primitive.h"
 
+#include <thrust/copy.h>
+
 
 namespace block3d_cuda {
 
@@ -8,14 +10,13 @@ namespace block3d_cuda {
 
     // Transfer primitive variable data from device to host
 
-    size_type array_size = block_info->IM_G * block_info->JM_G * block_info->KM_G;
-    size_t d_size = array_size * sizeof(value_type);
+    const size_type array_size = block_info->IM_G * block_info->JM_G * block_info->KM_G;
 
-    ERROR_CHECK( cudaMemcpy(rho, block_data->rho, d_size, cudaMemcpyDeviceToHost) );
-    ERROR_CHECK( cudaMemcpy(u, block_data->u, d_size, cudaMemcpyDeviceToHost) );
-    ERROR_CHECK( cudaMemcpy(v, block_data->v, d_size, cudaMemcpyDeviceToHost) );
-    ERROR_CHECK( cudaMemcpy(w, block_data->w, d_size, cudaMemcpyDeviceToHost) );
-    ERROR_CHECK( cudaMemcpy(p, block_data->p, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->rho.cbegin(), block_data->rho.cbegin() + array_size, rho);
+    thrust::copy(block_data->u.cbegin(), block_data->u.cbegin() + array_size, u);
+    thrust::copy(block_data->v.cbegin(), block_data->v.cbegin() + array_size, v);
+    thrust::copy(block_data->w.cbegin(), block_data->w.cbegin() + array_size, w);
+    thrust::copy(block_data->p.cbegin(), block_data->p.cbegin() + array_size, p);
 
   }
 

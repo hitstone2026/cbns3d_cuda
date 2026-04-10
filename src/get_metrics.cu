@@ -1,5 +1,6 @@
 #include "get_metrics.h"
 
+#include <thrust/copy.h>
 
 namespace block3d_cuda {
 
@@ -33,33 +34,31 @@ namespace block3d_cuda {
       }
     };
 
-    size_type array_size = IM_G * JM_G * KM_G;
-    size_t d_size = array_size * sizeof(value_type);
-    
+    const size_type array_size = IM_G * JM_G * KM_G;
     value_type *tmp = new value_type[array_size];
 
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->xi_x, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->xi_x.cbegin(), block_data->xi_x.cbegin() + array_size, tmp);
     copy_array(tmp, xi_x);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->xi_y, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->xi_y.cbegin(), block_data->xi_y.cbegin() + array_size, tmp);
     copy_array(tmp, xi_y);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->xi_z, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->xi_z.cbegin(), block_data->xi_z.cbegin() + array_size, tmp);
     copy_array(tmp, xi_z);
   
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->eta_x, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->eta_x.cbegin(), block_data->eta_x.cbegin() + array_size, tmp);
     copy_array(tmp, eta_x);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->eta_y, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->eta_y.cbegin(), block_data->eta_y.cbegin() + array_size, tmp);
     copy_array(tmp, eta_y);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->eta_z, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->eta_z.cbegin(), block_data->eta_z.cbegin() + array_size, tmp);
     copy_array(tmp, eta_z);
   
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->zeta_x, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->zeta_x.cbegin(), block_data->zeta_x.cbegin() + array_size, tmp);
     copy_array(tmp, zeta_x);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->zeta_y, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->zeta_y.cbegin(), block_data->zeta_y.cbegin() + array_size, tmp);
     copy_array(tmp, zeta_y);
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->zeta_z, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->zeta_z.cbegin(), block_data->zeta_z.cbegin() + array_size, tmp);
     copy_array(tmp, zeta_z);
 
-    ERROR_CHECK( cudaMemcpy(tmp, block_data->Jac, d_size, cudaMemcpyDeviceToHost) );
+    thrust::copy(block_data->Jac.cbegin(), block_data->Jac.cbegin() + array_size, tmp);
     copy_array(tmp, Jac);
 
     delete[] tmp;

@@ -24,63 +24,63 @@ namespace block3d_cuda {
 		    (block_info->KM_G + num_threads.z - 1) / num_threads.z
 		    );
   
-    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->u,
-						      block_data->u_xi,
-						      block_data->u_eta,
-						      block_data->u_zeta
+    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->u_ptr(),
+						      block_data->u_xi_ptr(),
+						      block_data->u_eta_ptr(),
+						      block_data->u_zeta_ptr()
 						      );
 
-    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->v,
-						      block_data->v_xi,
-						      block_data->v_eta,
-						      block_data->v_zeta
+    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->v_ptr(),
+						      block_data->v_xi_ptr(),
+						      block_data->v_eta_ptr(),
+						      block_data->v_zeta_ptr()
 						      );
   
-    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->w,
-						      block_data->w_xi,
-						      block_data->w_eta,
-						      block_data->w_zeta
+    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->w_ptr(),
+						      block_data->w_xi_ptr(),
+						      block_data->w_eta_ptr(),
+						      block_data->w_zeta_ptr()
 						      );
 
-    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->T,
-						      block_data->T_xi,
-						      block_data->T_eta,
-						      block_data->T_zeta
+    gradient_wg_kernel<<< num_blocks, num_threads >>>(block_data->T_ptr(),
+						      block_data->T_xi_ptr(),
+						      block_data->T_eta_ptr(),
+						      block_data->T_zeta_ptr()
 						      );
     ERROR_CHECK( cudaDeviceSynchronize() );
 
-    viscous_terms_kernel<<< num_blocks, num_threads >>>(block_data->T,
-							block_data->xi_x,
-							block_data->xi_y,
-							block_data->xi_z,
-							block_data->eta_x,
-							block_data->eta_y,
-							block_data->eta_z,
-							block_data->zeta_x,
-							block_data->zeta_y,
-							block_data->zeta_z,
-							block_data->u_xi,
-							block_data->u_eta,
-							block_data->u_zeta,
-							block_data->v_xi,
-							block_data->v_eta,
-							block_data->v_zeta,
-							block_data->w_xi,
-							block_data->w_eta,
-							block_data->w_zeta,
-							block_data->T_xi,
-							block_data->T_eta,
-							block_data->T_zeta,
-							block_data->mu,
-							block_data->tau_xx,
-							block_data->tau_yy,
-							block_data->tau_zz,
-							block_data->tau_xy,
-							block_data->tau_xz,
-							block_data->tau_yz,
-							block_data->q_x,
-							block_data->q_y,
-							block_data->q_z
+    viscous_terms_kernel<<< num_blocks, num_threads >>>(block_data->T_ptr(),
+							block_data->xi_x_ptr(),
+							block_data->xi_y_ptr(),
+							block_data->xi_z_ptr(),
+							block_data->eta_x_ptr(),
+							block_data->eta_y_ptr(),
+							block_data->eta_z_ptr(),
+							block_data->zeta_x_ptr(),
+							block_data->zeta_y_ptr(),
+							block_data->zeta_z_ptr(),
+							block_data->u_xi_ptr(),
+							block_data->u_eta_ptr(),
+							block_data->u_zeta_ptr(),
+							block_data->v_xi_ptr(),
+							block_data->v_eta_ptr(),
+							block_data->v_zeta_ptr(),
+							block_data->w_xi_ptr(),
+							block_data->w_eta_ptr(),
+							block_data->w_zeta_ptr(),
+							block_data->T_xi_ptr(),
+							block_data->T_eta_ptr(),
+							block_data->T_zeta_ptr(),
+							block_data->mu_ptr(),
+							block_data->tau_xx_ptr(),
+							block_data->tau_yy_ptr(),
+							block_data->tau_zz_ptr(),
+							block_data->tau_xy_ptr(),
+							block_data->tau_xz_ptr(),
+							block_data->tau_yz_ptr(),
+							block_data->q_x_ptr(),
+							block_data->q_y_ptr(),
+							block_data->q_z_ptr()
 							);
     
     ERROR_CHECK( cudaDeviceSynchronize() );

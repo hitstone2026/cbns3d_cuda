@@ -1,5 +1,7 @@
 #include "set_conservative.h"
 
+#include <thrust/copy.h>
+
 
 namespace block3d_cuda {
 
@@ -8,12 +10,13 @@ namespace block3d_cuda {
 
     // Transfer conservative variable data from host to device 
   
-    size_type array_size = block_info->NEQ * block_info->IM_G * block_info->JM_G * block_info->KM_G;
-    size_t d_size = array_size * sizeof(value_type);
+    const size_type array_size = block_info->NEQ * block_info->IM_G * block_info->JM_G * block_info->KM_G;
 
-    ERROR_CHECK( cudaMemcpy(block_data->Q, Q, d_size, cudaMemcpyHostToDevice) );
+    // Host → device
+    thrust::copy(Q, Q + array_size, block_data->Q.begin());
 
-    ERROR_CHECK( cudaMemcpy(block_data->Q_p, block_data->Q, d_size, cudaMemcpyDeviceToDevice) );
+    // Device → device
+    block_data->Q_p = block_data->Q;
 
   }
 

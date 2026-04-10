@@ -24,12 +24,12 @@ namespace block3d_cuda {
 		    );
     
     primitive_kernel<<< num_blocks, num_threads >>>(Q,
-						    block_data->rho,
-						    block_data->u,
-						    block_data->v,
-						    block_data->w,
-						    block_data->p,
-						    block_data->T
+						    block_data->rho_ptr(),
+						    block_data->u_ptr(),
+						    block_data->v_ptr(),
+						    block_data->w_ptr(),
+						    block_data->p_ptr(),
+						    block_data->T_ptr()
 						    );
 
     ERROR_CHECK( cudaDeviceSynchronize() );

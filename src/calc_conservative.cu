@@ -1,6 +1,8 @@
 #include "calc_conservative.h"
 #include "conservative_kernel.h"
 
+#include <thrust/copy.h>
+
 
 namespace block3d_cuda {
 
@@ -23,20 +25,18 @@ namespace block3d_cuda {
 		    (block_info->KM_G + num_threads.z - 1) / num_threads.z
 		    );
     
-    conservative_kernel<<< num_blocks, num_threads >>>(block_data->rho,
-						       block_data->u,
-						       block_data->v,
-						       block_data->w,
-						       block_data->p,
+    conservative_kernel<<< num_blocks, num_threads >>>(block_data->rho_ptr(),
+						       block_data->u_ptr(),
+						       block_data->v_ptr(),
+						       block_data->w_ptr(),
+						       block_data->p_ptr(),
 						       Q
 						       );
 
     ERROR_CHECK( cudaDeviceSynchronize() );
 
-    size_type array_size = block_info->NEQ * block_info->IM_G * block_info->JM_G * block_info->KM_G;
-    size_t d_size = array_size * sizeof(value_type);
-
-    ERROR_CHECK( cudaMemcpy(block_data->Q_p, block_data->Q, d_size, cudaMemcpyDeviceToDevice) );
+    // Keep Q_p in sync with Q after updates (device→device)
+    block_data->Q_p = block_data->Q;
 
   }
 

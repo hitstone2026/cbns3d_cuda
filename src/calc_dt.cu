@@ -25,22 +25,22 @@ namespace block3d_cuda {
 		    (block_info->KM + num_threads.z - 1) / num_threads.z
 		    );
     
-    time_step_kernel<<< num_blocks, num_threads >>>(block_data->rho,
-						    block_data->u,
-						    block_data->v,
-						    block_data->w,
-						    block_data->p,
-						    block_data->mu,
-						    block_data->xi_x,
-						    block_data->xi_y,
-						    block_data->xi_z,
-						    block_data->eta_x,
-						    block_data->eta_y,
-						    block_data->eta_z,
-						    block_data->zeta_x,
-						    block_data->zeta_y,
-						    block_data->zeta_z,
-						    block_data->dt
+    time_step_kernel<<< num_blocks, num_threads >>>(block_data->rho_ptr(),
+						    block_data->u_ptr(),
+						    block_data->v_ptr(),
+						    block_data->w_ptr(),
+						    block_data->p_ptr(),
+						    block_data->mu_ptr(),
+						    block_data->xi_x_ptr(),
+						    block_data->xi_y_ptr(),
+						    block_data->xi_z_ptr(),
+						    block_data->eta_x_ptr(),
+						    block_data->eta_y_ptr(),
+						    block_data->eta_z_ptr(),
+						    block_data->zeta_x_ptr(),
+						    block_data->zeta_y_ptr(),
+						    block_data->zeta_z_ptr(),
+						    block_data->dt_ptr()
 						    );
 
     ERROR_CHECK( cudaDeviceSynchronize() );
@@ -48,8 +48,8 @@ namespace block3d_cuda {
     const size_type array_size = block_info->IM * block_info->JM * block_info->KM;
 
     thrust::device_ptr<value_type> result =
-      thrust::max_element(thrust::device_pointer_cast(block_data->dt),
-			  thrust::device_pointer_cast(block_data->dt) + array_size);
+      thrust::max_element(thrust::device_pointer_cast(block_data->dt_ptr()),
+			  thrust::device_pointer_cast(block_data->dt_ptr()) + array_size);
 
     const value_type dt = block_info->CFL / *result;
 

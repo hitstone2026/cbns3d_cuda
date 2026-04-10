@@ -25,48 +25,48 @@ namespace block3d_cuda {
 		    );
   
     rec_riemann_xi_kernel<<< num_blocks, num_threads >>>(Q,
-							 block_data->rho,
-							 block_data->u,
-							 block_data->v,
-							 block_data->w,
-							 block_data->p,
-							 block_data->xi_x,
-							 block_data->xi_y,
-							 block_data->xi_z,
-							 block_data->Jac,
-							 block_data->Ep
+							 block_data->rho_ptr(),
+							 block_data->u_ptr(),
+							 block_data->v_ptr(),
+							 block_data->w_ptr(),
+							 block_data->p_ptr(),
+							 block_data->xi_x_ptr(),
+							 block_data->xi_y_ptr(),
+							 block_data->xi_z_ptr(),
+							 block_data->Jac_ptr(),
+							 block_data->Ep_ptr()
 							 );
 
     num_blocks.x = (block_info->IM - 2 + num_threads.x - 1) / num_threads.x;
     num_blocks.y = (block_info->JM - 1 + num_threads.x - 1) / num_threads.y;
     
     rec_riemann_eta_kernel<<< num_blocks, num_threads >>>(Q,
-							  block_data->rho,
-							  block_data->u,
-							  block_data->v,
-							  block_data->w,
-							  block_data->p,
-							  block_data->eta_x,
-							  block_data->eta_y,
-							  block_data->eta_z,
-							  block_data->Jac,
-							  block_data->Fp
+							  block_data->rho_ptr(),
+							  block_data->u_ptr(),
+							  block_data->v_ptr(),
+							  block_data->w_ptr(),
+							  block_data->p_ptr(),
+							  block_data->eta_x_ptr(),
+							  block_data->eta_y_ptr(),
+							  block_data->eta_z_ptr(),
+							  block_data->Jac_ptr(),
+							  block_data->Fp_ptr()
 							  );
 
     num_blocks.y = (block_info->JM - 2 + num_threads.x - 1) / num_threads.y;
     num_blocks.z = (block_info->KM - 1 + num_threads.x - 1) / num_threads.z;
     
     rec_riemann_zeta_kernel<<< num_blocks, num_threads >>>(Q,
-							   block_data->rho,
-							   block_data->u,
-							   block_data->v,
-							   block_data->w,
-							   block_data->p,
-							   block_data->zeta_x,
-							   block_data->zeta_y,
-							   block_data->zeta_z,
-							   block_data->Jac,
-							   block_data->Gp
+							   block_data->rho_ptr(),
+							   block_data->u_ptr(),
+							   block_data->v_ptr(),
+							   block_data->w_ptr(),
+							   block_data->p_ptr(),
+							   block_data->zeta_x_ptr(),
+							   block_data->zeta_y_ptr(),
+							   block_data->zeta_z_ptr(),
+							   block_data->Jac_ptr(),
+							   block_data->Gp_ptr()
 							   );
     
     ERROR_CHECK( cudaDeviceSynchronize() );

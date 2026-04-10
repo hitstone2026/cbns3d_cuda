@@ -26,13 +26,13 @@ namespace block3d_cuda {
   
     rk3_kernel<<< num_blocks, num_threads >>>(dt,
 					      stage,
-					      block_data->Jac,
-					      block_data->Ep,
-					      block_data->Fp,
-					      block_data->Gp,
-					      block_data->diff_flux_vis,
-					      block_data->Q,
-					      block_data->Q_p
+					      block_data->Jac_ptr(),
+					      block_data->Ep_ptr(),
+					      block_data->Fp_ptr(),
+					      block_data->Gp_ptr(),
+					      block_data->diff_flux_vis_ptr(),
+					      block_data->Q_ptr(),
+					      block_data->Q_p_ptr()
 					      );
     
     ERROR_CHECK( cudaDeviceSynchronize() );
