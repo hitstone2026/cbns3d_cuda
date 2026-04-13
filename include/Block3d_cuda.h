@@ -11,6 +11,14 @@
 #define _BLOCK3D_CUDA_H_
 
 #include <cstdio>
+
+// Windows headers (pulled in by cuda_runtime.h) define min/max macros and break Thrust/CUB.
+#if defined(_WIN32)
+#  ifndef NOMINMAX
+#    define NOMINMAX
+#  endif
+#endif
+
 #include <cuda_runtime.h>
 
 #include <thrust/device_vector.h>

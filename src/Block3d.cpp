@@ -1,3 +1,9 @@
+#if defined(_WIN32)
+#  ifndef NOMINMAX
+#    define NOMINMAX
+#  endif
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -218,16 +224,16 @@ void Block3d::solve() {
 
   if (is_restart) {
     block3d_cuda::initial_condition(&block_info, &block_data);
-    block3d_cuda::calc_conservative(&block_info, &block_data, block_data.Q);
+    block3d_cuda::calc_conservative(&block_info, &block_data, block_data.Q_ptr());
   } else {
     read_bin(checkpoint_fname);
     block3d_cuda::set_conservative(&block_info, &block_data, Q);
 #ifndef IS_INVISCID
-    block3d_cuda::calc_primitive(&block_info, &block_data, block_data.Q);
+    block3d_cuda::calc_primitive(&block_info, &block_data, block_data.Q_ptr());
 #endif
   }
   
-  block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q);
+  block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_ptr());
 #ifndef IS_INVISCID
   block3d_cuda::calc_viscous_terms(&block_info, &block_data);
 #endif
@@ -246,42 +252,42 @@ void Block3d::solve() {
     t_cur += dt;
     std::cout << n_t << ", " << dt << ", " << t_cur << std::endl;
 
-    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q);
+    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_flux_contribution(&block_info, &block_data);
 #endif
   
     block3d_cuda::update_rk3(&block_info, &block_data, dt, 1);
 
-    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_p);
+    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_p_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_terms(&block_info, &block_data);
 #endif
 
     // -------------------------------------------------------------------------
 
-    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q_p);
+    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q_p_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_flux_contribution(&block_info, &block_data);
 #endif
   
     block3d_cuda::update_rk3(&block_info, &block_data, dt, 2);
 
-    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_p);
+    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_p_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_terms(&block_info, &block_data);
 #endif
 
     // -------------------------------------------------------------------------
 
-    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q_p);
+    block3d_cuda::calc_numerical_flux(&block_info, &block_data, block_data.Q_p_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_flux_contribution(&block_info, &block_data);
 #endif
   
     block3d_cuda::update_rk3(&block_info, &block_data, dt, 3);
 
-    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q);
+    block3d_cuda::set_bc_calc_primitive(&block_info, &block_data, block_data.Q_ptr());
 #ifndef IS_INVISCID
     block3d_cuda::calc_viscous_terms(&block_info, &block_data);
 #endif
